@@ -2,6 +2,10 @@
 
 ![image](https://user-images.githubusercontent.com/9394918/121517767-69db8a80-c9f8-11eb-835a-e98ca07fd995.png)
 
+## Install helm-chart
+```
+helm install sasuage-store-chart ./sausage-store-chart --namespace default
+```
 
 ## Technologies used
 
