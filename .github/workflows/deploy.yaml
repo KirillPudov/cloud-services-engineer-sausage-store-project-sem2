@@ -100,7 +100,7 @@ jobs:
         
         - name: Add helm repo
           run: |
-            helm repo add chartmuseum $NEXUS_HELM_REPO --username $NEXUS_HELM_REPO_USER --password $NEXUS_HELM_REPO_PASSWORD --upgrade
+            helm repo add chartmuseum ${{ secrets.NEXUS_HELM_REPO }} --username ${{ secrets.NEXUS_HELM_REPO_USER }} --password ${{ secrets.NEXUS_HELM_REPO_PASSWORD }} --upgrade
         
         - name: 'Deploy'
           uses: 'deliverybot/helm@v1'
