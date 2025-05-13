@@ -71,7 +71,7 @@ backend:
       - containerName: "*"
         controlledResources: ["cpu", "memory"]
 
-backend_report:
+backend-report:
   image_tag: latest
   revisionHistoryLimit: 15
   replicas: 1

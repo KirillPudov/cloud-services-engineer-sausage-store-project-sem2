@@ -13,25 +13,25 @@ metadata:
     app.kubernetes.io/component: {{ .Chart.Name }}
     app.kubernetes.io/part-of: {{ .Release.Name }}
 spec:
-  revisionHistoryLimit: {{ .Values.backend.revisionHistoryLimit }}
-  replicas: {{ .Values.backend.replicas }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  replicas: {{ .Values.replicas }}
   strategy:
-{{ toYaml .Values.backend.strategy | indent 4 }} 
+{{ toYaml .Values.strategy | indent 4 }} 
   selector:
     matchLabels:
       app: {{ .Release.Name }}-{{ .Chart.Name }}
   template:
     metadata:
       annotations:
-        prometheus.io/path: {{ .Values.backend.annotations.path }}
-        prometheus.io/port: "{{ .Values.backend.annotations.port }}"
-        prometheus.io/scrape: "{{ .Values.backend.annotations.scrape }}"
+        prometheus.io/path: {{ .Values.annotations.path }}
+        prometheus.io/port: "{{ .Values.annotations.port }}"
+        prometheus.io/scrape: "{{ .Values.annotations.scrape }}"
       labels:
         app: {{ .Release.Name }}-{{ .Chart.Name }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          image: kirillpudov/sausage-backend:{{ .Values.backend.image_tag }}
+          image: kirillpudov/sausage-backend:{{ .Values.image_tag }}
           imagePullPolicy: {{ .Values.global.imagePullPolicy }}
           env:
             - name: REPORT_PATH
@@ -52,7 +52,7 @@ spec:
 {{ toYaml .Values.resources | indent 12 }} 
           ports:
             - name: {{ .Chart.Name }}
-              containerPort: {{ .Values.backend.containerPort }}
+              containerPort: {{ .Values.containerPort }}
           livenessProbe:
 {{ toYaml .Values.livenessProbe | indent 12 }} 
       volumes:
@@ -75,6 +75,6 @@ spec:
     kind: Deployment
     name: {{ .Release.Name }}-{{ .Chart.Name }}
   updatePolicy:
-{{ toYaml .Values.backend.vpa.updatePolicy | indent 4 }} 
+{{ toYaml .Values.vpa.updatePolicy | indent 4 }} 
   resourcePolicy:
-{{ toYaml .Values.backend.vpa.resourcePolicy | indent 4 }} 
+{{ toYaml .Values.vpa.resourcePolicy | indent 4 }} 
