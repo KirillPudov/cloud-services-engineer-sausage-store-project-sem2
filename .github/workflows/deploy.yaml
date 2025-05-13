@@ -86,7 +86,7 @@ jobs:
             helm repo add chartmuseum ${{ secrets.NEXUS_HELM_REPO }} --username ${{ secrets.NEXUS_HELM_REPO_USER }} --password ${{ secrets.NEXUS_HELM_REPO_PASSWORD }}
             export CURRENT_VER=`helm show chart ./sausage-store-chart | yq '.version'`
             export NEW_VER=`echo "$CURRENT_VER" | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g'`
-            helm cm-push sausage-store-chart --version=$NEW_VER chartmuseum
+            helm cm-push sausage-store-chart --version=$NEW_VER chartmuseum --context-path="/repository/kirillpudov-sem2-helm"
 
   # Деплоим приложения в кластер Kubernetes с помощью helm-чарт
   deploy_helm_chart_to_kubernetes:
