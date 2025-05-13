@@ -7,16 +7,16 @@ spec:
   ingressClassName: "nginx"
   tls:
     - hosts:
-        - {{ .Values.ingress.host }}
+        - {{ .Values.frontend.ingress.host }}
       secretName: 2sem-students-projects-wildcard-secret
   rules:
     - host: {{ .Values.ingress.host }}
       http:
         paths:
-        - path: {{ .Values.ingress.path }}
-          pathType: {{ .Values.ingress.pathType }}
+        - path: {{ .Values.frontend.ingress.path }}
+          pathType: {{ .Values.frontend.ingress.pathType }}
           backend:
             service:
               name: {{ .Release.Name }}-{{ .Chart.Name }}-service
               port:
-                number: {{ .Values.service.port }}
+                number: {{ .Values.frontend.service.port }}
