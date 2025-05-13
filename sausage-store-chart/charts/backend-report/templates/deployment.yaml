@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          image: kirillpudov/sausage-backend-report:{{ .Values.backend-report.image_tag }}
+          image: kirillpudov/sausage-backend-report:{{ .Values.backend_report.image_tag }}
           imagePullPolicy: {{ .Values.global.imagePullPolicy }}
           env:
             - name: PORT
@@ -44,7 +44,7 @@ spec:
 {{ toYaml .Values.resources | indent 12 }} 
           ports:
             - name: {{ .Chart.Name }}
-              containerPort: {{ .Values.containerPort }}
+              containerPort: {{ .Values.backend_report.containerPort }}
           livenessProbe:
 {{ toYaml .Values.livenessProbe | indent 12 }} 
       volumes:
@@ -78,12 +78,12 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ .Release.Name }}-{{ .Chart.Name }}
-  minReplicas: {{ .Values.hpa.minReplicas }}
-  maxReplicas: {{ .Values.hpa.maxReplicas }}
+  minReplicas: {{ .Values.backend_report.hpa.minReplicas }}
+  maxReplicas: {{ .Values.backend_report.hpa.maxReplicas }}
   metrics:
   - type: Resource
     resource:
       name: cpu
       target:
         type: Utilization
-        averageUtilization: {{ .Values.hpa.averageUtilization }}
+        averageUtilization: {{ .Values.backend_report.hpa.averageUtilization }}
