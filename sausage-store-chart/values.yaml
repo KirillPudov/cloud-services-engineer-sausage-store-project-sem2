@@ -50,10 +50,10 @@ backend:
   resources:
     requests:
       memory: "256Mi"
-      cpu: "100m"
+      cpu: "25m"
     limits:
       memory: "512Mi"
-      cpu: "1"
+      cpu: "25m"
   containerPort: 8080
   livenessProbe:
     httpGet:
@@ -65,11 +65,17 @@ backend:
     failureThreshold: 6
   vpa:
     updatePolicy:
-      updateMode: "Auto"
+      updateMode: "Recreate"
     resourcePolicy:
       containerPolicies:
-      - containerName: "*"
-        controlledResources: ["cpu", "memory"]
+        - containerName: "*"
+          minAllowed:
+            cpu: 25m
+            memory: 0Mi
+          maxAllowed:
+            cpu: 25m
+            memory: 500Mi
+          controlledResources: ["cpu", "memory"]
 
 backend-report:
   image_tag: latest
