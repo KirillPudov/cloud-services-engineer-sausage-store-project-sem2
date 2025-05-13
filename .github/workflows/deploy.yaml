@@ -75,8 +75,6 @@ jobs:
           # Получение исходного кода из репозитория:
           uses: actions/checkout@v3
 
-        - uses: chrisdickinson/setup-yq@latest
-
         - name: Install Helm
           uses: azure/setup-helm@v1
           with:
@@ -101,8 +99,6 @@ jobs:
           uses: azure/setup-helm@v1
           with:
             version: v3.4.0
-        
-        - uses: chrisdickinson/setup-yq@latest
         
         - name: Add helm repo
           run: |
