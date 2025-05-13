@@ -75,6 +75,8 @@ jobs:
           # Получение исходного кода из репозитория:
           uses: actions/checkout@v3
 
+        - uses: chrisdickinson/setup-yq@latest
+
         - name: Install Helm
           uses: azure/setup-helm@v1
           with:
@@ -84,7 +86,9 @@ jobs:
           run: |
             helm plugin install https://github.com/chartmuseum/helm-push
             helm repo add chartmuseum ${{ secrets.NEXUS_HELM_REPO }} --username ${{ secrets.NEXUS_HELM_REPO_USER }} --password ${{ secrets.NEXUS_HELM_REPO_PASSWORD }}
-            helm cm-push sausage-store-chart --version=${{ github.sha }} chartmuseum
+            export CURRENT_VER=`helm show chart ./sausage-store-chart | yq .version`
+            NEW_VER=`echo "$CURRENT_VER" | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g'`
+            helm cm-push sausage-store-chart --version=$NEW_VER chartmuseum
 
   # Деплоим приложения в кластер Kubernetes с помощью helm-чарт
   deploy_helm_chart_to_kubernetes:
@@ -98,20 +102,10 @@ jobs:
           with:
             version: v3.4.0
         
+        - uses: chrisdickinson/setup-yq@latest
+        
         - name: Add helm repo
           run: |
             helm repo add chartmuseum ${{ secrets.NEXUS_HELM_REPO }} --username ${{ secrets.NEXUS_HELM_REPO_USER }} --password ${{ secrets.NEXUS_HELM_REPO_PASSWORD }}
-        
-        - name: 'Deploy'
-          uses: 'deliverybot/helm@v1'
-          with:
-            release: 'sausage-store-chart'
-            namespace: $SAUSAGE_STORE_NAMESPACE
-            chart: 'sausage-store-chart'
-            version: '${{ github.sha }}'
-            token: '${{ github.token }}'
-            values: |
-              global.vault.name=${{ secrets.VAULT_HOST }}
-              global.vault.token=${{ secrets.VAULT_TOKEN }}
-          env:
-            KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
+            export VERSION=`helm show chart chartmuseum/sausage-store-chart | yq .version`
+            helm upgrade --install chartmuseum/sausage-store-chart --version $VERSION --kubeconfig '${{ secrets.KUBECONFIG }}' --set global.vault.name=${{ secrets.VAULT_HOST }} --set global.vault.token=${{ secrets.VAULT_TOKEN }}
