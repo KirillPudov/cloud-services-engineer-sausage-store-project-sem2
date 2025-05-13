@@ -104,5 +104,7 @@ jobs:
           run: |
             helm repo add chartmuseum ${{ secrets.NEXUS_HELM_REPO }} --username ${{ secrets.NEXUS_HELM_REPO_USER }} --password ${{ secrets.NEXUS_HELM_REPO_PASSWORD }}
             helm repo update
+            echo "${{ secrets.KUBECONFIG }}" > kubeconf
             export VERSION=`helm show chart chartmuseum/sausage-store | yq '.version'`
-            helm upgrade --install sausage-store chartmuseum/sausage-store --version $VERSION --kubeconfig '${{ secrets.KUBECONFIG }}' --set global.vault.name=${{ secrets.VAULT_HOST }} --set global.vault.token=${{ secrets.VAULT_TOKEN }}
+            helm upgrade --install sausage-store chartmuseum/sausage-store --version $VERSION --kubeconfig ./kubeconf --set global.vault.name=${{ secrets.VAULT_HOST }} --set global.vault.token=${{ secrets.VAULT_TOKEN }}
+            rm -rf kubeconf
