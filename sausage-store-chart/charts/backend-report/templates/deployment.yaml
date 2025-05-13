@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          image: {{ .Values.image }}
+          image: kirillpudov/sausage-backend-report:{{ .Values.backend-report.image_tag }}
           imagePullPolicy: {{ .Values.global.imagePullPolicy }}
           env:
             - name: PORT

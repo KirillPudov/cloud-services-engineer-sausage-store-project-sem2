@@ -1,9 +1,9 @@
 global:
   imagePullPolicy: Always
-  #vault:
-  #  host: ip
-  #  name: vault
-  #  vaultToken: someToken
+  vault:
+   host: ip
+   name: vault
+   vaultToken: someToken
 
 
 frontend:
@@ -18,7 +18,7 @@ frontend:
     path: /
     pathType: Prefix
   containerPort: 80
-  image: kirillpudov/sausage-frontend:latest
+  image_tag: latest
   resources:
     requests:
       memory: "128Mi"
@@ -45,7 +45,7 @@ backend:
     rollingUpdate:
       maxUnavailable: 1
       maxSurge: 2
-  image: kirillpudov/sausage-backend:latest
+  image_tag: latest
   imagePullPolicy: Always
   resources:
     requests:
@@ -56,11 +56,13 @@ backend:
       cpu: "1"
   containerPort: 8080
   livenessProbe:
-    exec:
-      command:
-        - ls
+    httpGet:
+      path: /actuator/health
+      port: 8080
     initialDelaySeconds: 15
-    periodSeconds: 10
+    periodSeconds: 30
+    timeoutSeconds: 1
+    failureThreshold: 6
   vpa:
     updatePolicy:
       updateMode: "Auto"
@@ -70,7 +72,7 @@ backend:
         controlledResources: ["cpu", "memory"]
 
 backend-report:
-  image: kirillpudov/sausage-backend-report:latest
+  image_tag: latest
   revisionHistoryLimit: 15
   replicas: 1
   containerPort: 8080
